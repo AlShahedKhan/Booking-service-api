@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Repositories\Interfaces\ForgotPasswordInterface;
 use App\Repositories\Interfaces\ResetPasswordInterface;
+use App\Helpers\ApiResponse;
 
 class ForgotPasswordController extends Controller
 {
@@ -26,32 +27,17 @@ class ForgotPasswordController extends Controller
         $result = $this->forgotPasswordRepo->sendOtp($request->email);
 
         if (!$result) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found.',
-                'data' => null,
-                'status_code' => 404
-            ], 404);
+            return ApiResponse::error('User not found.', 404);
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'OTP sent successfully.',
-            'data' => null,
-            'status_code' => 200
-        ]);
+        return ApiResponse::success('OTP sent successfully.');
     }
 
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse
     {
         $this->forgotPasswordRepo->verifyOtp($request->validated());
 
-        return response()->json([
-            'status' => true,
-            'message' => 'OTP verified successfully.',
-            'data' => null,
-            'status_code' => 200
-        ]);
+        return ApiResponse::success('OTP verified successfully.');
     }
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
@@ -59,11 +45,6 @@ class ForgotPasswordController extends Controller
         // This assumes your repo returns user info and token
         $result = $this->resetPasswordRepo->resetPassword($request->only(['email', 'password']));
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Password reset successfully.',
-            'data' => $result, // e.g. ['user' => ..., 'token' => ...]
-            'status_code' => 200
-        ]);
+        return ApiResponse::success('Password reset successfully.', $result);
     }
 }
