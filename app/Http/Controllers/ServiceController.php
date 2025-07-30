@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ServiceRequest;
-use App\Interfaces\ServiceRepositoryInterface;
+use App\Repositories\Interfaces\ServiceRepositoryInterface;
 
 class ServiceController extends Controller
 {

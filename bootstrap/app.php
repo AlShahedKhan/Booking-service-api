@@ -16,8 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'is.admin' => IsAdmin::class, // Register as route middleware
         ]);
-    
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withProviders([
+        \App\Providers\RepositoryServiceProvider::class,
+    ])
+    ->create();

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\BookingRepositoryInterface;
+use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Models\Booking;
 
 class BookingRepository implements BookingRepositoryInterface

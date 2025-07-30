@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ServiceRepositoryInterface;
+use App\Repositories\Interfaces\ServiceRepositoryInterface;
 use App\Models\Service;
 
 class ServiceRepository implements ServiceRepositoryInterface

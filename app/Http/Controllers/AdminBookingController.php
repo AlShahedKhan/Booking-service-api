@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Interfaces\BookingRepositoryInterface;
+use App\Repositories\Interfaces\BookingRepositoryInterface;
 
 class AdminBookingController extends Controller
 {

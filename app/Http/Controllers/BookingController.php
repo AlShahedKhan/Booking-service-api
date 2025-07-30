@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BookingRequest;
-use App\Interfaces\BookingRepositoryInterface;
+use App\Repositories\Interfaces\BookingRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
