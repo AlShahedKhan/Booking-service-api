@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\BookingRepositoryInterface;
+use App\Helpers\ApiResponse;
 
 class AdminBookingController extends Controller
 {
@@ -12,6 +13,7 @@ class AdminBookingController extends Controller
     }
 
     public function index() {
-        return response()->json($this->bookingRepo->all());
+        $bookings = $this->bookingRepo->all();
+        return ApiResponse::success($bookings, 'All bookings fetched successfully.');
     }
 }

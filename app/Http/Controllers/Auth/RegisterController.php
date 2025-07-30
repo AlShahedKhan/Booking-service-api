@@ -6,6 +6,7 @@ use App\Traits\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegistrationRequest;
 use App\Repositories\Interfaces\RegisterInterface;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -23,7 +24,7 @@ class RegisterController extends Controller
             $token = $result['token'];
             $cookie = cookie('auth_token', $token, 60, '/', null, true, true, false, 'Strict');
             return $this->successResponse('User registered successfully', [
-                'data' => $user,
+                'user' => $user,
                 'token' => $token,
                 'app_url' => $result['app_url'],
             ])->withCookie($cookie);

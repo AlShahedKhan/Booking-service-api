@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ServiceRequest;
 use App\Repositories\Interfaces\ServiceRepositoryInterface;
+use App\Helpers\ApiResponse;
 
 class ServiceController extends Controller
 {
@@ -13,21 +14,20 @@ class ServiceController extends Controller
         $this->serviceRepo = $serviceRepo;
     }
 
-    public function index()
-    {
-        return response()->json($this->serviceRepo->all());
+    public function index() {
+        $services = $this->serviceRepo->all();
+        return ApiResponse::success($services, 'Services fetched successfully.');
     }
-    public function store(ServiceRequest $request)
-    {
-        return response()->json($this->serviceRepo->create($request->validated()), 201);
+    public function store(ServiceRequest $request) {
+        $service = $this->serviceRepo->create($request->validated());
+        return ApiResponse::success($service, 'Service created successfully.', 201);
     }
-    public function update(ServiceRequest $request, $id)
-    {
-        return response()->json($this->serviceRepo->update($id, $request->validated()));
+    public function update(ServiceRequest $request, $id) {
+        $service = $this->serviceRepo->update($id, $request->validated());
+        return ApiResponse::success($service, 'Service updated successfully.');
     }
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $this->serviceRepo->delete($id);
-        return response()->json(null, 204);
+        return ApiResponse::success(null, 'Service deleted successfully.', 204);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookingRequest;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\ApiResponse;
 
 class BookingController extends Controller
 {
@@ -15,12 +16,14 @@ class BookingController extends Controller
 
     public function index() {
         $userId = Auth::id();
-        return response()->json($this->bookingRepo->userBookings($userId));
+        $bookings = $this->bookingRepo->userBookings($userId);
+        return ApiResponse::success($bookings, 'User bookings fetched successfully.');
     }
 
     public function store(BookingRequest $request) {
         $data = $request->validated();
         $data['user_id'] = Auth::id();
-        return response()->json($this->bookingRepo->create($data), 201);
+        $booking = $this->bookingRepo->create($data);
+        return ApiResponse::success($booking, 'Booking created successfully.', 201);
     }
 }
