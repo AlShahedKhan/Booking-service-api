@@ -22,13 +22,7 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::group(['middleware' => ['auth:api']], function () {
-    Route::get('/get-all-contact', [ContactController::class, 'index'])->name('contact.index');
-    Route::get('/get-contact/{contact}', [ContactController::class, 'show'])->name('contact.show');
-});
 
-
-Route::middleware('auth:sanctum')->group(function () {
-    // Customer
     Route::get('/services', [ServiceController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
     Route::get('/bookings', [BookingController::class, 'index']);
@@ -41,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/bookings', [AdminBookingController::class, 'index']);
     });
 });
+
+
 
 
 Route::match(['post', 'put', 'patch', 'HEAD', 'OPTIONS', 'DELETE', 'GET'], 'blogs/{id?}', [BlogController::class, 'getAllOrOneOrDestroy']);
