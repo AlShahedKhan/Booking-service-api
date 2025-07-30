@@ -1,154 +1,111 @@
 # Booking Service API
 
-A Laravel-based booking system with JWT authentication, user/admin roles, service management, and booking functionality. Follows a clean repository pattern and provides consistent API responses.
+A Laravel-based booking system with JWT authentication, role-based access, service and booking management, and full PHPUnit test coverage.
 
 ---
 
-## Features
+## 🚀 Features
 
-- **JWT Authentication** (using tymon/jwt-auth)
-- **User Roles:** Admin & Customer
-- **Service Management:** CRUD for services (admin only)
-- **Booking Management:** Book services, view bookings (user & admin)
-- **Repository Pattern:** Clean separation of business logic
-- **Form Request Validation:** With custom error responses
-- **Consistent API Responses:** All endpoints return a standard JSON structure
-- **Seeders:** Pre-populated admin/user and services
+- JWT Authentication (`tymon/jwt-auth`)
+- Role-based Access: Admin & Customer
+- Service Management (CRUD by Admin)
+- Booking System (User & Admin views)
+- Repository Pattern Architecture
+- Form Request Validation
+- Consistent JSON API Responses
+- Pre-seeded Users & Services
+- PHPUnit Feature Tests
 
 ---
 
-## Getting Started
-
-### 1. Clone the Repository
+## ⚙️ Installation
 
 ```bash
 git clone <your-repo-url>
-cd Booking-service
-```
-
-### 2. Install Dependencies
-
-```bash
+cd Booking-service-api
 composer install
-npm install
-```
-
-### 3. Environment Setup
-
-- Copy `.env.example` to `.env` and configure your database and JWT secret:
-
-```bash
 cp .env.example .env
 php artisan key:generate
 php artisan jwt:secret
-```
-
-- Set your database credentials in `.env`.
-
-### 4. Run Migrations & Seeders
-
-```bash
 php artisan migrate --seed
 ```
 
-This will create tables and seed an admin and a regular user, plus some services.
+---
 
-### 5. Start the Server
+
+## 🧪 Run Tests
 
 ```bash
-php artisan serve
+php artisan test                   # Run all tests
+php artisan test --verbose        # Verbose output
+php artisan test tests/Feature/AuthTest.php  # Specific file
 ```
 
 ---
 
-## API Endpoints
+## 🧾 API Endpoints Overview
 
-### Authentication
+### 🔐 Auth
+- `POST /api/login` – Login
+- `POST /api/register` – Register
 
-- `POST /api/login` — Login and receive JWT token
-- `POST /api/register` — Register a new user
+### 🛠 Services
+- `GET /api/services` – List services
+- `POST /api/services` – Create (admin)
+- `PUT /api/services/{id}` – Update (admin)
+- `DELETE /api/services/{id}` – Delete (admin)
 
-### Services
-
-- `GET /api/services` — List all available services (user & admin)
-- `POST /api/services` — Create a new service (admin only)
-- `PUT /api/services/{id}` — Update a service (admin only)
-- `DELETE /api/services/{id}` — Delete a service (admin only)
-
-### Bookings
-
-- `POST /api/bookings` — Book a service (user)
-- `GET /api/bookings` — List logged-in user's bookings
-- `GET /api/admin/bookings` — List all bookings (admin only)
+### 📅 Bookings
+- `POST /api/bookings` – Book a service (user)
+- `GET /api/bookings` – User's bookings
+- `GET /api/admin/bookings` – All bookings (admin)
 
 ---
 
-## Request & Response Format
+## 🧑‍💻 Default Users
 
-All responses follow this structure:
+- **Admin:**  
+  Email: `admin@test.com`  
+  Password: `Zr#82qLp@fTg9wXk`
 
-```json
-{
-  "status": true,
-  "message": "Descriptive message.",
-  "data": { ... },
-  "status_code": 200
-}
+- **User:**  
+  Email: `user@test.com`  
+  Password: `Zr#82qLp@fTg9wXk`
+
+---
+
+## 📂 Project Structure
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   ├── Requests/
+├── Repositories/
+│   ├── Interfaces/
+│   └── Implementations/
+├── Helpers/
+│   └── ApiResponse.php
+
+database/
+├── seeders/
+├── factories/
+
+tests/
+└── Feature/
+    ├── AuthTest.php
+    ├── ServiceTest.php
+    └── BookingTest.php
 ```
 
-Validation errors:
+---
 
-```json
-{
-  "status": false,
-  "message": "First validation error message.",
-  "data": {
-    "errors": {
-      "field": ["Error message"]
-    }
-  },
-  "status_code": 422
-}
-```
+## 📜 License
+
+This project is open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
 
 ---
 
-## Default Seeded Users
+## 🤝 Contributing
 
-- **Admin**
-  - Email: `admin@test.com`
-  - Password: `Zr#82qLp@fTg9wXk`
-- **User**
-  - Email: `user@test.com`
-  - Password: `Zr#82qLp@fTg9wXk`
-
----
-
-## Testing with Postman
-
-- Use the `/api/login` endpoint to get a JWT token.
-- Add `Authorization: Bearer <token>` to your headers for protected routes.
-- Set `Content-Type: application/json` and `Accept: application/json` in your requests.
-
----
-
-## Project Structure
-
-- `app/Repositories/Interfaces/` — Repository interfaces
-- `app/Repositories/` — Repository implementations
-- `app/Http/Controllers/` — Controllers
-- `app/Http/Requests/` — Form requests for validation
-- `app/Helpers/ApiResponse.php` — Standardized API response helper
-- `database/seeders/` — Seeders for users and services
-
----
-
-## License
-
-MIT
-
----
-
-## Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
