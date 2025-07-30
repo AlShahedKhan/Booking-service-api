@@ -28,8 +28,8 @@ class LoginController extends Controller
         $cookie = cookie('auth_token', $token, 60, '/', null, true, true, false, 'Strict');
         LoginUserJob::dispatch($user->id, now()->toDateTimeString());
         return $this->successResponse('Logged in successfully.', [
-            'token' => $token,
-            'user' => $user
+            'user' => $user,
+            'token' => $token
         ])->withCookie($cookie);
     }
 }

@@ -20,8 +20,8 @@ class LoginRepository implements LoginInterface
         ];
         $token = JWTAuth::claims($payload)->fromUser($user);
         return [
-            'token' => $token,
-            'user' => $user
+            'user' => $user,
+            'token' => $token
         ];
     }
 }
