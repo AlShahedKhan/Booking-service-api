@@ -14,27 +14,56 @@ class ForgotPasswordController extends Controller
 {
     protected $forgotPasswordRepo;
     protected $resetPasswordRepo;
+
     public function __construct(ForgotPasswordInterface $forgotPasswordRepo, ResetPasswordInterface $resetPasswordRepo)
     {
         $this->forgotPasswordRepo = $forgotPasswordRepo;
         $this->resetPasswordRepo = $resetPasswordRepo;
     }
+
     public function sendOtp(ForgotPasswordRequest $request): JsonResponse
     {
         $result = $this->forgotPasswordRepo->sendOtp($request->email);
+
         if (!$result) {
-            return response()->json(['message' => 'User not found.'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found.',
+                'data' => null,
+                'status_code' => 404
+            ], 404);
         }
-        return response()->json(['message' => 'OTP sent successfully.']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OTP sent successfully.',
+            'data' => null,
+            'status_code' => 200
+        ]);
     }
+
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse
     {
         $this->forgotPasswordRepo->verifyOtp($request->validated());
-        return response()->json(['message' => 'OTP verified successfully.']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OTP verified successfully.',
+            'data' => null,
+            'status_code' => 200
+        ]);
     }
+
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        $this->resetPasswordRepo->resetPassword($request->only(['email', 'password']));
-        return response()->json(['message' => 'Password reset successfully.']);
+        // This assumes your repo returns user info and token
+        $result = $this->resetPasswordRepo->resetPassword($request->only(['email', 'password']));
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password reset successfully.',
+            'data' => $result, // e.g. ['user' => ..., 'token' => ...]
+            'status_code' => 200
+        ]);
     }
 }
