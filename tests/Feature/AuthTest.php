@@ -1,0 +1,91 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class AuthTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        $this->userData = [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@example.com',
+            'password' => 'StrongPassword123!',
+            'password_confirmation' => 'StrongPassword123!',
+        ];
+    }
+
+    public function test_user_can_register()
+    {
+        $response = $this->postJson('/api/register', $this->userData);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data' => [
+                    'user' => [
+                        'id',
+                        'first_name',
+                        'last_name',
+                        'email',
+                        'role',
+                    ],
+                    'token',
+                    'app_url',
+                ],
+                'status_code',
+            ])
+            ->assertJson([
+                'status' => true,
+                'message' => 'User registered successfully',
+            ]);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'john@example.com',
+            'role' => 'user',
+        ]);
+    }
+
+    public function test_user_can_login()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('StrongPassword123!'),
+        ]);
+
+        $response = $this->postJson('/api/login', [
+            'email' => 'test@example.com',
+            'password' => 'StrongPassword123!',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data' => [
+                    'user',
+                    'token',
+                ],
+                'status_code',
+            ]);
+    }
+
+    public function test_login_fails_with_invalid_credentials()
+    {
+        $response = $this->postJson('/api/login', [
+            'email' => 'invalid@example.com',
+            'password' => 'wrongpassword',
+        ]);
+
+        $response->assertStatus(401);
+    }
+}
