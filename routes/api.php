@@ -1,12 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\BlogController;
 
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [LoginController::class, 'login']);
@@ -22,6 +25,23 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/get-all-contact', [ContactController::class, 'index'])->name('contact.index');
     Route::get('/get-contact/{contact}', [ContactController::class, 'show'])->name('contact.show');
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Customer
+    Route::get('/services', [ServiceController::class, 'index']);
+    Route::post('/bookings', [BookingController::class, 'store']);
+    Route::get('/bookings', [BookingController::class, 'index']);
+
+    // Admin
+    Route::middleware('admin')->group(function () {
+        Route::post('/services', [ServiceController::class, 'store']);
+        Route::put('/services/{id}', [ServiceController::class, 'update']);
+        Route::delete('/services/{id}', [ServiceController::class, 'destroy']);
+        Route::get('/admin/bookings', [AdminBookingController::class, 'index']);
+    });
+});
+
 
 Route::match(['post', 'put', 'patch', 'HEAD', 'OPTIONS', 'DELETE', 'GET'], 'blogs/{id?}', [BlogController::class, 'getAllOrOneOrDestroy']);
 Route::match(['post', 'put', 'patch', 'HEAD', 'OPTIONS'], 'blogs/{id?}', [BlogController::class, 'storeOrUpdate']);
