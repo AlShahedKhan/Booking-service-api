@@ -13,10 +13,16 @@ use App\Exceptions\RequestTimeoutException;
 use App\Exceptions\ResourceCreatedException;
 use App\Traits\AuthenticatedAdminCheck;
 use App\Traits\ChecksRequestTimeout;
+use App\Repositories\BlogRepositoryInterface;
 
 class BlogController extends Controller
 {
     use HandlesApiResponses, ChecksRequestTimeout, AuthenticatedAdminCheck;
+    protected $blogs;
+    public function __construct(BlogRepositoryInterface $blogs)
+    {
+        $this->blogs = $blogs;
+    }
 
     public function getAllOrOneOrDestroy(Request $request, $id = null)
     {
@@ -28,26 +34,26 @@ class BlogController extends Controller
             }
 
             if ($request->isMethod('delete')) {
-                $blog = Blog::find($id);
+                $blog = $this->blogs->find($id);
                 if (!$blog) {
                     throw new NotFoundException('Blog', $id);
                 }
                 if ($blog->image) {
                     Storage::disk('public')->delete($blog->image);
                 }
-                $blog->delete();
+                $this->blogs->delete($id);
                 return $this->successResponse(null, 'Blog deleted');
             }
 
             if ($id) {
-                $blog = Blog::find($id);
+                $blog = $this->blogs->find($id);
                 if (!$blog) {
                     throw new NotFoundException('Blog', $id);
                 }
                 return $this->successResponse($blog, 'Blog found');
             }
 
-            $blogs = Blog::all();
+            $blogs = $this->blogs->all();
             return $this->successResponse($blogs, 'Blog list fetched');
         } catch (\Exception $e) {
             throw $e;
@@ -86,23 +92,23 @@ class BlogController extends Controller
             }
 
             if ($id) {
-                $blog = Blog::find($id);
+                $blog = $this->blogs->find($id);
                 if (!$blog) {
                     throw new NotFoundException('Blog', $id);
                 }
                 if ($request->hasFile('image') && $blog->image) {
                     Storage::disk('public')->delete($blog->image);
                 }
-                $blog->update($data);
+                $this->blogs->update($id, $data);
                 if ($request->header('X-Resource-Created') === '1') {
                     throw new ResourceCreatedException('Resource created successfully (demo)');
                 }
                 // Check for timeout before returning
                 // sleep(2); // Sleep for 2 seconds to simulate a slow operation
                 $this->checkRequestTimeout($start, 1); // 1 second for demo
-                return $this->successResponse($blog, 'Blog updated');
+                return $this->successResponse($this->blogs->find($id), 'Blog updated');
             } else {
-                $blog = Blog::create($data);
+                $blog = $this->blogs->create($data);
                 if ($request->header('X-Resource-Created') === '1') {
                     throw new ResourceCreatedException();
                 }

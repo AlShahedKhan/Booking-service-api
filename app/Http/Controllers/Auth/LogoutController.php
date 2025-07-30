@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
+use App\Repositories\Interfaces\LogoutInterface;
 
 class LogoutController extends Controller
 {
+    protected $logoutRepo;
+    public function __construct(LogoutInterface $logoutRepo)
+    {
+        $this->logoutRepo = $logoutRepo;
+    }
     public function logout(): JsonResponse
     {
-        Auth::guard('api')->logout();
-        $cookie = Cookie::forget('auth_token');
+        $cookie = $this->logoutRepo->logout();
         return response()->json(['message' => 'Successfully logged out.'])->withCookie($cookie);
     }
 }

@@ -3,31 +3,29 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Traits\ApiResponse;
-use App\Jobs\Auth\RegisterUserJob;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegistrationRequest;
+use App\Repositories\Interfaces\RegisterInterface;
 
 class RegisterController extends Controller
 {
     use ApiResponse;
+    protected $registerRepo;
+    public function __construct(RegisterInterface $registerRepo)
+    {
+        $this->registerRepo = $registerRepo;
+    }
     public function register(RegistrationRequest $request)
     {
         return $this->safeCall(function () use ($request) {
-            $user = (new RegisterUserJob($request->validated()))->handle();
-
-            $payload = [
-                'user' => $user,
-                'iss'     => URL::secure('/'),
-            ];
-            $token = JWTAuth::claims($payload)->fromUser($user);
+            $result = $this->registerRepo->register($request->validated());
+            $user = $result['user'];
+            $token = $result['token'];
             $cookie = cookie('auth_token', $token, 60, '/', null, true, true, false, 'Strict');
-
             return $this->successResponse('User registered successfully', [
                 'data' => $user,
                 'token' => $token,
-                'app_url' => URL::secure('/'),
+                'app_url' => $result['app_url'],
             ])->withCookie($cookie);
         });
     }
