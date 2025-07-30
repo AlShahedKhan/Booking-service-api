@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookingController;
@@ -28,7 +29,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/bookings', [BookingController::class, 'index']);
 
     // Admin
-    Route::middleware('admin')->group(function () {
+    Route::middleware('is.admin')->group(function () {
         Route::post('/services', [ServiceController::class, 'store']);
         Route::put('/services/{id}', [ServiceController::class, 'update']);
         Route::delete('/services/{id}', [ServiceController::class, 'destroy']);
@@ -41,3 +42,11 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 // Route::match(['post', 'put', 'patch', 'HEAD', 'OPTIONS', 'DELETE', 'GET'], 'blogs/{id?}', [BlogController::class, 'getAllOrOneOrDestroy']);
 // Route::match(['post', 'put', 'patch', 'HEAD', 'OPTIONS'], 'blogs/{id?}', [BlogController::class, 'storeOrUpdate']);
+
+
+Route::get('/test-auth', function () {
+    $user = Auth::guard('api')->user();
+    return response()->json([
+        'user' => $user,
+    ]);
+});
