@@ -14,7 +14,7 @@ class ServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->user = User::factory()->create(['role' => 'user']);
         $this->serviceData = [
@@ -88,7 +88,12 @@ class ServiceTest extends TestCase
     public function test_admin_can_update_a_service()
     {
         $service = Service::factory()->create();
-        $updateData = ['name' => 'Updated Service'];
+        $updateData = [
+            'name' => 'Updated Service',
+            'description' => 'Updated Description',
+            'price' => 149.99,
+            'status' => 'active'
+        ];
 
         $response = $this->actingAs($this->admin, 'api')
             ->putJson("/api/services/{$service->id}", $updateData);

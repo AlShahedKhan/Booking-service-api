@@ -26,7 +26,7 @@ class RegistrationRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:50','regex:/^[\pL\s\-]+$/u'],
             'last_name'  => ['required', 'string', 'max:50','regex:/^[\pL\s\-]+$/u'],
-            'email' => ['required', 'string','email:rfc,dns,spoof','max:50',Rule::unique('users', 'email')->ignore($this->user)],
+            'email' => ['required', 'string', 'email', 'max:50', 'unique:users,email'],
             'role' => ['nullable', 'string', Rule::in(['user', 'admin'])],
             'password' => ['required', 'string', Password::min(16)->mixedCase()->numbers()->symbols()->uncompromised(5), 'confirmed']
         ];

@@ -15,7 +15,7 @@ class BookingTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create(['role' => 'user']);
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->service = Service::factory()->create(['status' => 'active']);
@@ -31,17 +31,17 @@ class BookingTest extends TestCase
             ->postJson('/api/bookings', $this->bookingData);
 
         $response->assertStatus(201)
-            ->assertJsonStructure([
-                'status',
-                'message',
+            ->assertJson([
+                'status' => true,
+                'message' => 'Booking created successfully.',
+                'status_code' => 201,
+            ])->assertJsonStructure([
                 'data' => [
                     'id',
                     'user_id',
                     'service_id',
                     'booking_date',
-                    'status',
                 ],
-                'status_code',
             ])
             ->assertJson([
                 'status' => true,

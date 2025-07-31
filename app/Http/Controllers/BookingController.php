@@ -24,6 +24,11 @@ class BookingController extends Controller
         $data = $request->validated();
         $data['user_id'] = Auth::id();
         $booking = $this->bookingRepo->create($data);
-        return ApiResponse::success($booking, 'Booking created successfully.', 201);
+        return response()->json([
+            'status' => true,
+            'message' => 'Booking created successfully.',
+            'data' => $booking,
+            'status_code' => 201
+        ], 201);
     }
 }

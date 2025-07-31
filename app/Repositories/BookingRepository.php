@@ -11,5 +11,5 @@ class BookingRepository implements BookingRepositoryInterface
     public function userBookings($userId) {
         return Booking::where('user_id', $userId)->with('service')->get();
     }
-    public function create(array $data) { return Booking::create($data); }
+    public function create(array $data) { return Booking::create($data)->toArray(); }
 }

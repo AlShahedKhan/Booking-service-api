@@ -21,10 +21,9 @@ Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/services', [ServiceController::class, 'index']);
 
 Route::group(['middleware' => ['auth:api']], function () {
-
-    Route::get('/services', [ServiceController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
     Route::get('/bookings', [BookingController::class, 'index']);
 

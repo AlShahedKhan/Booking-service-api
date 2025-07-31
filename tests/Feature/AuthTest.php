@@ -13,13 +13,13 @@ class AuthTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->userData = [
             'first_name' => 'John',
             'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'password' => 'StrongPassword123!',
-            'password_confirmation' => 'StrongPassword123!',
+            'email' => 'john.doe@example.com',
+            'password' => 'vK9#mP2$nL5@xR8&pQ4*dZ7',
+            'password_confirmation' => 'vK9#mP2$nL5@xR8&pQ4*dZ7',
         ];
     }
 
@@ -50,21 +50,18 @@ class AuthTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'john@example.com',
+            'email' => 'john.doe@example.com',
             'role' => 'user',
         ]);
     }
 
     public function test_user_can_login()
     {
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('StrongPassword123!'),
-        ]);
+        $this->postJson('/api/register', $this->userData);
 
         $response = $this->postJson('/api/login', [
-            'email' => 'test@example.com',
-            'password' => 'StrongPassword123!',
+            'email' => 'john.doe@example.com',
+            'password' => 'vK9#mP2$nL5@xR8&pQ4*dZ7',
         ]);
 
         $response->assertStatus(200)
