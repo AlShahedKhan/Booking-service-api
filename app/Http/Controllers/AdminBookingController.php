@@ -12,6 +12,8 @@ class AdminBookingController extends Controller
         $this->bookingRepo = $bookingRepo;
     }
 
+    // 
+
     public function index() {
         $bookings = $this->bookingRepo->all();
         return ApiResponse::success($bookings, 'All bookings fetched successfully.');
