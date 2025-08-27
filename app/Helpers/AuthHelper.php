@@ -20,5 +20,4 @@ class AuthHelper
             abort(403, 'Forbidden: Only admins are authorized to perform this action.');
         }
     }
-    // 
 }
